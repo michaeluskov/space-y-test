@@ -6,8 +6,8 @@ export class Client {
    * @return {Promise<string | null>} username
    * */
   async getUser() {
-    let res = await fetch("/api/user");
-    let { user } = await res.json();
+    let result = await fetch("/api/user");
+    let { user } = await result.json();
     return user;
   }
 
@@ -19,7 +19,7 @@ export class Client {
    * @return {Promise<string | null>} username
    * */
   async loginUser(username) {
-    let res = await fetch("api/user", {
+    let res = await fetch("/api/user", {
       method: "POST",
       body: JSON.stringify({user: username}),
       headers: {
