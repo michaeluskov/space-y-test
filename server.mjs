@@ -9,20 +9,15 @@ import fetch from "node-fetch";
 const rootDir = process.cwd();
 const port = 3000;
 const app = express();
+const authCookie = 'auth';
 
 function check(request, response, next) {
   const user = request.cookies[authCookie];
-  if (!user && (request.path.startsWith("/static") || request.path.startsWith("/api") || request.path !== "/login")) {
+  if (!user && !(request.path.startsWith("/static") || request.path.startsWith("/api") || request.path === "/login" || request.path.endsWith(".mjs"))) {
     response.redirect("/login");
-  }
+  } else
   next();
 }
-
-app.use(cookieParser());
-app.use(bodyParser.json());
-app.use(express.static('spa/build'))
-app.use(check);
-
 
 app.get("/client.mjs", (_, res) => {
   res.header("Cache-Control", "private, no-cache, no-store, must-revalidate");
@@ -32,11 +27,16 @@ app.get("/client.mjs", (_, res) => {
   });
 });
 
+app.use(cookieParser({}));
+app.use(bodyParser.json());
+app.use(check);
+app.use(express.static('spa/build'));
+
 app.get("/api/user", (req, res) => {
   res.json({
-    username: null
+    username: req.cookies['username']
   });
-  console.log(req.cookie['username']);
+  console.log(req.cookies['username']);
 });
 
 app.post("/api/user", (req, res) => {

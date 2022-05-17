@@ -7,7 +7,11 @@ export class Client {
    * @return {Promise<string | null>} username
    * */
   async getUser() {
-    return await fetch('/api/user', {method: "GET"}).json().username;
+    const response = await fetch('/api/user');
+    const json = await response.json();
+    const username = json.username;
+    console.log(username);
+    return username;
   }
 
   /**
@@ -20,13 +24,14 @@ export class Client {
   async loginUser(username) {
     let res = await fetch("api/user", {
       method: "POST",
-      body: {user: username},
+      body: JSON.stringify({user: username}),
       headers: {
         "content-type" : "application/json"
       }
     });
 
-    return await res.json().username;
+    const json = await res.json();
+    return json.username;
   }
 
   /**
