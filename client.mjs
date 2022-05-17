@@ -1,4 +1,5 @@
 export class Client {
+  _username = null;
   /**
    * Должен возвращать имя пользователя или null
    * если пользователь не залогинен
@@ -6,9 +7,7 @@ export class Client {
    * @return {Promise<string | null>} username
    * */
   async getUser() {
-    let res = await fetch("/api/user");
-    let { user } = await res.json();
-    return user;
+    return await fetch('/api/user', {method: "GET"}).json().username;
   }
 
   /**
@@ -21,14 +20,13 @@ export class Client {
   async loginUser(username) {
     let res = await fetch("api/user", {
       method: "POST",
-      body: JSON.stringify({user: username}),
+      body: {user: username},
       headers: {
         "content-type" : "application/json"
       }
     });
 
-    let { user } = await res.json();
-    return user;
+    return await res.json().username;
   }
 
   /**

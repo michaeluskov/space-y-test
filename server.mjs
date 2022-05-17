@@ -9,7 +9,6 @@ import fetch from "node-fetch";
 const rootDir = process.cwd();
 const port = 3000;
 const app = express();
-//var https = require("https");
 
 app.use(express.static('spa/build'))
 
@@ -21,8 +20,18 @@ app.get("/client.mjs", (_, res) => {
   });
 });
 
-app.get("/", (_, res) => {
-  res.send(":)");
+app.get("/api/user", (req, res) => {
+  res.json({
+    username: null
+  });
+  console.log(req.cookie['username']);
+});
+
+app.post("/api/user", (req, res) => {
+  const name = req.body.user;
+  console.log(name);
+  res.cookie('username', name, {secure:true, httpOnly: true, sameSite: "strict"});
+  res.json({username: name})
 });
 
 app.get('*', (req, res) => {
