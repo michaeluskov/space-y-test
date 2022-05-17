@@ -1,0 +1,60 @@
+Index: server.mjs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import * as path from \"path\";\r\nimport fs from \"fs\";\r\nimport express from \"express\";\r\nimport https from \"https\";\r\nimport cookieParser from \"cookie-parser\";\r\nimport bodyParser from \"body-parser\";\r\nimport fetch from \"node-fetch\";\r\n\r\nconst rootDir = process.cwd();\r\nconst port = 3000;\r\nconst app = express();\r\n\r\napp.get(\"/client.mjs\", (_, res) => {\r\n  res.header(\"Cache-Control\", \"private, no-cache, no-store, must-revalidate\");\r\n  res.sendFile(path.join(rootDir, \"client.mjs\"), {\r\n    maxAge: -1,\r\n    cacheControl: false,\r\n  });\r\n});\r\n\r\napp.get(\"/\", (_, res) => {\r\n  res.send(\":)\");\r\n});\r\n\r\napp.listen(port, () => {\r\n  console.log(`App listening on port ${port}`);\r\n});\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/server.mjs b/server.mjs
+--- a/server.mjs	(revision c8e465b8655272a44609df595bf627f826ac7ae1)
++++ b/server.mjs	(date 1652691928167)
+@@ -9,6 +9,9 @@
+ const rootDir = process.cwd();
+ const port = 3000;
+ const app = express();
++//var https = require("https");
++
++app.use(express.static('spa/build'))
+ 
+ app.get("/client.mjs", (_, res) => {
+   res.header("Cache-Control", "private, no-cache, no-store, must-revalidate");
+@@ -22,6 +25,22 @@
+   res.send(":)");
+ });
+ 
+-app.listen(port, () => {
++app.get('*', (req, res) => {
++  res.sendFile(path.join(rootDir, 'spa/build/index.html'))
++})
++
++// require("https")
++//   .createServer(
++//     {
++//       key: readFileSync("/certs/server.key"),
++//       cert: readFileSync("/certs/server.cert"),
++//     },
++//     app
++//   )
++//   .listen(port, function () {
++//     console.log(`App listening on port ${port}`);
++//   });
++
++app.listen(port, function () {
+   console.log(`App listening on port ${port}`);
+ });
+Index: client.mjs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>export class Client {\r\n  /**\r\n   * Должен возвращать имя пользователя или null\r\n   * если пользователь не залогинен\r\n   *\r\n   * @return {Promise<string | null>} username\r\n   * */\r\n  async getUser() {\r\n    throw new Error(\"Not implemented\");\r\n  }\r\n\r\n  /**\r\n   * Должен логинить пользователя с именем username\r\n   * и возвращать его имя\r\n   *\r\n   * @param {string} username\r\n   * @return {Promise<string | null>} username\r\n   * */\r\n  async loginUser(username) {\r\n    throw new Error(\"Not implemented\");\r\n  }\r\n\r\n  /**\r\n   * Должен разлогинивать текущего пользователя\r\n   *\r\n   * @return {void}\r\n   * */\r\n  async logoutUser() {\r\n    throw new Error(\"Not implemented\");\r\n  }\r\n\r\n  /**\r\n   * Должен возвращать информацию о компании\r\n   *\r\n   * @typedef {Object} Headquarters\r\n   * @property {string} address\r\n   * @property {string} city\r\n   * @property {string} state\r\n   *\r\n   * @typedef {Object} About\r\n   * @property {string} founder\r\n   * @property {string} founded\r\n   * @property {number} employees\r\n   * @property {string} ceo\r\n   * @property {string} coo\r\n   * @property {string} cto\r\n   * @property {number} valuation\r\n   * @property {Headquarters} headquarters\r\n   * @property {string} summary\r\n   * @return {Promise<About>}\r\n   * */\r\n  async getInfo() {\r\n    throw new Error(\"Not implemented\");\r\n  }\r\n\r\n  /**\r\n   * Должен возвращать информацию о всех событиях\r\n   *\r\n   * @typedef {Object} EventBrief\r\n   * @property {number} id\r\n   * @property {string} title\r\n   *\r\n   * @return {Promise<EventBrief[]>}\r\n   * */\r\n  async getHistory() {\r\n    throw new Error(\"Not implemented\");\r\n  }\r\n\r\n  /**\r\n   * Должен возвращать информацию о запрошенном событии\r\n   *\r\n   * @typedef {Object} EventFull\r\n   * @property {number} id\r\n   * @property {string} title\r\n   * @property {string} event_date_utc\r\n   * @property {string} details\r\n   * @property {Object.<string, ?string>} links\r\n   *\r\n   * @param {number} id\r\n   * @return {Promise<EventFull>}\r\n   * */\r\n  async getHistoryEvent(id) {\r\n    throw new Error(\"Not implemented\");\r\n  }\r\n\r\n  /**\r\n   * Должен возвращать информацию о всех ракетах\r\n   *\r\n   * @typedef {Object} RocketBrief\r\n   * @property {number} rocket_id\r\n   * @property {string} rocket_name\r\n   *\r\n   * @return {Promise<RocketBrief[]>}\r\n   * */\r\n  async getRockets() {\r\n    throw new Error(\"Not implemented\");\r\n  }\r\n\r\n  /**\r\n   * Должен возвращать информацию о запрошенной ракете\r\n   *\r\n   * @typedef {Object} RocketFull\r\n   * @property {number} rocket_id\r\n   * @property {string} rocket_name\r\n   * @property {string} first_flight\r\n   * @property {string} description\r\n   * @property {string} wikipedia\r\n   * @property {string[]} flickr_images\r\n   * Смотри источник данных:\r\n   * @property {Object} height\r\n   * @property {Object} diameter\r\n   * @property {Object} mass\r\n   * @property {Object} engines\r\n   * @property {Object} first_stage\r\n   * @property {Object} second_stage\r\n   *\r\n   * @param {string} id\r\n   * @return {Promise<RocketFull>}\r\n   * */\r\n  async getRocket(id) {\r\n    throw new Error(\"Not implemented\");\r\n  }\r\n\r\n  /**\r\n   * Должен возвращать информацию о машине в космосе\r\n   *\r\n   * @typedef {Object} Roadster\r\n   * @property {string} name\r\n   * @property {string} launch_date_utc\r\n   * @property {string} details\r\n   * @property {number} earth_distance_km\r\n   * @property {number} mars_distance_km\r\n   * @property {string} wikipedia\r\n   *\r\n   * @return {Promise<Roadster>}\r\n   * */\r\n  async getRoadster() {\r\n    throw new Error(\"Not implemented\");\r\n  }\r\n\r\n  /**\r\n   * Должен возвращать информацию о всех посланных на Марс предметах\r\n   *\r\n   * @typedef {Object} Item\r\n   * @property {!string} id\r\n   * @property {!string} name\r\n   * @property {!string} phone\r\n   * @property {?number} weight\r\n   * @property {?string} color\r\n   * @property {?boolean} important\r\n   *\r\n   * @return {Promise<Item[]>}\r\n   * */\r\n  async getSentToMars() {\r\n    throw new Error(\"Not implemented\");\r\n  }\r\n\r\n  /**\r\n   * Должен посылать на марс переданный предмет и\r\n   * возвращать информацию о всех посланных на Марс предметах\r\n   *\r\n   * @typedef {Object} ItemToSend\r\n   * @property {!string} name\r\n   * @property {!string} phone\r\n   * @property {?number} weight\r\n   * @property {?string} color\r\n   * @property {?boolean} important\r\n   *\r\n   * @param {ItemToSend} item\r\n   * @return {Promise<Item[]>}\r\n   * */\r\n  async sendToMars(item) {\r\n    throw new Error(\"Not implemented\");\r\n  }\r\n\r\n  /**\r\n   * Должен отменять отправку на марс переданного предмета и\r\n   * возвращать информацию о всех посланных на Марс предметах\r\n   *\r\n   * @param {Item} item\r\n   * @return {Promise<Item[]>}\r\n   * */\r\n  async cancelSendingToMars(item) {\r\n    throw new Error(\"Not implemented\");\r\n  }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/client.mjs b/client.mjs
+--- a/client.mjs	(revision c8e465b8655272a44609df595bf627f826ac7ae1)
++++ b/client.mjs	(date 1652692359377)
+@@ -1,4 +1,5 @@
+ export class Client {
++
+   /**
+    * Должен возвращать имя пользователя или null
+    * если пользователь не залогинен

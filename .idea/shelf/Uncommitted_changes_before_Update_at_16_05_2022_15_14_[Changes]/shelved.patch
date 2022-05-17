@@ -1,0 +1,18 @@
+Index: server.mjs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import * as path from \"path\";\r\nimport fs from \"fs\";\r\nimport express from \"express\";\r\nimport https from \"https\";\r\nimport cookieParser from \"cookie-parser\";\r\nimport bodyParser from \"body-parser\";\r\nimport fetch from \"node-fetch\";\r\n\r\nconst rootDir = process.cwd();\r\nconst port = 3000;\r\nconst app = express();\r\n//var https = require(\"https\");\r\n\r\napp.use(express.static('spa/build'))\r\n\r\napp.get(\"/client.mjs\", (_, res) => {\r\n  res.header(\"Cache-Control\", \"private, no-cache, no-store, must-revalidate\");\r\n  res.sendFile(path.join(rootDir, \"client.mjs\"), {\r\n    maxAge: -1,\r\n    cacheControl: false,\r\n  });\r\n});\r\n\r\napp.get(\"/\", (_, res) => {\r\n  res.send(\":)\");\r\n});\r\n\r\napp.get('*', (req, res) => {\r\n  res.sendFile(path.join(rootDir, 'spa/build/index.html'))\r\n})\r\n\r\n// require(\"https\")\r\n//   .createServer(\r\n//     {\r\n//       key: readFileSync(\"/certs/server.key\"),\r\n//       cert: readFileSync(\"/certs/server.cert\"),\r\n//     },\r\n//     app\r\n//   )\r\n//   .listen(port, function () {\r\n//     console.log(`App listening on port ${port}`);\r\n//   });\r\n\r\napp.listen(port, function () {\r\n  console.log(`App listening on port ${port}`);\r\n});
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/server.mjs b/server.mjs
+--- a/server.mjs	(revision 2e5fb5c91338923715b4866c51208fc60cc6e6a5)
++++ b/server.mjs	(date 1652696071334)
+@@ -9,7 +9,6 @@
+ const rootDir = process.cwd();
+ const port = 3000;
+ const app = express();
+-//var https = require("https");
+ 
+ app.use(express.static('spa/build'))
+ 
