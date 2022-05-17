@@ -7,11 +7,7 @@ export class Client {
    * @return {Promise<string | null>} username
    * */
   async getUser() {
-    const response = await fetch('/api/user');
-    const json = await response.json();
-    const username = json.username;
-    console.log(username);
-    return username;
+    return (await (await fetch('/api/user')).json()).username;
   }
 
   /**
@@ -30,8 +26,7 @@ export class Client {
       }
     });
 
-    const json = await res.json();
-    return json.username;
+    return (await res.json()).username;
   }
 
   /**
