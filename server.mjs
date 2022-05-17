@@ -10,7 +10,19 @@ const rootDir = process.cwd();
 const port = 3000;
 const app = express();
 
+function check(request, response, next) {
+  const user = request.cookies[authCookie];
+  if (!user && (request.path.startsWith("/static") || request.path.startsWith("/api") || request.path !== "/login")) {
+    response.redirect("/login");
+  }
+  next();
+}
+
+app.use(cookieParser());
+app.use(bodyParser.json());
 app.use(express.static('spa/build'))
+app.use(check);
+
 
 app.get("/client.mjs", (_, res) => {
   res.header("Cache-Control", "private, no-cache, no-store, must-revalidate");
@@ -38,18 +50,30 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(rootDir, 'spa/build/index.html'))
 })
 
-// require("https")
-//   .createServer(
-//     {
-//       key: readFileSync("/certs/server.key"),
-//       cert: readFileSync("/certs/server.cert"),
-//     },
-//     app
-//   )
-//   .listen(port, function () {
-//     console.log(`App listening on port ${port}`);
-//   });
+// app.get("/api/user", (req, res) => {
+//   let user = req.cookies[authCookie];
+//   res.json({user: user || null});
+// });
+//
+// app.post("/api/user", (req, res) => {
+//   let { user } = req.body;
+//   res.cookie(authCookie, user, {httpOnly: true, secure: true, sameSite: "strict"});
+//   res.json({user: user || null});
+// });
+//
+// app.delete("/api/user", (req, res) => {
+//   res.clearCookie(authCookie);
+//   res.sendStatus(200);
+// });
 
-app.listen(port, function () {
+
+// https.createServer({
+//   key: fs.readFileSync(path.join(rootDir, "/certs/server.key")),
+//   cert: fs.readFileSync(path.join(rootDir, "/certs/server.cert"))
+// }, app)
+//     .listen(port, () => {
+//       console.log(`App listening on port ${port}`);
+//     });
+app.listen(port, () => {
   console.log(`App listening on port ${port}`);
 });
